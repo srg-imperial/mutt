@@ -9,7 +9,7 @@ GCC    = $(shell which gcc)
 CLANG  = $(shell which clang)
 
 # For debugging
-STRIP  = /usr/bin/true
+STRIP  = $(shell which true)
 CFLAGS = -O0 -g
 
 # Where each version expects to be installed
@@ -33,9 +33,9 @@ MUTT_DIR = $(PWD)/bin
 MUTT     = $(MUTT_DIR)/mutt
 
 # Command lines to run MUTT with Varan inside script
-RUN_GCC_GCC      = ASAN_OPTIONS="handle_segv=0" $(VX) $(MUTT_GCC) $(MUTT_GCC)      -- \$$@
-RUN_GCC_GCC_ASAN = ASAN_OPTIONS="handle_segv=0" $(VX) $(MUTT_GCC) $(MUTT_GCC_ASAN) -- \$$@
-RUN_CLANG_CLANG      = ASAN_OPTIONS="handle_segv=0" $(VX) $(MUTT_CLANG) $(MUTT_CLANG)      -- \$$@
+RUN_GCC_GCC          =                              $(VX) $(MUTT_GCC) $(MUTT_GCC)          -- \$$@
+RUN_GCC_GCC_ASAN     = ASAN_OPTIONS="handle_segv=0" $(VX) $(MUTT_GCC) $(MUTT_GCC_ASAN)     -- \$$@
+RUN_CLANG_CLANG      =                              $(VX) $(MUTT_CLANG) $(MUTT_CLANG)      -- \$$@
 RUN_CLANG_CLANG_ASAN = ASAN_OPTIONS="handle_segv=0" $(VX) $(MUTT_CLANG) $(MUTT_CLANG_ASAN) -- \$$@
 
 # Main target
@@ -69,10 +69,10 @@ vx-gcc-gcc_asan: $(MUTT_GCC) $(MUTT_GCC_ASAN)
 $(MUTT_GCC):
 	rm -rf $(INSTALL_BUILD_DIR) || true
 	make -C .. clean || true
-	cd .. ; CC=$(GCC)         \
-  	CFLAGS="$(CFLAGS)"      \
-  	STRIP="$(STRIP)"        \
-  	./configure             \
+	cd .. ; CC=$(GCC)  \
+  	CFLAGS="$(CFLAGS)" \
+  	STRIP="$(STRIP)"   \
+  	./configure        \
   	--prefix=$(INSTALL_BUILD_DIR)
 	make -C ..
 	make -C .. install
@@ -83,7 +83,7 @@ $(MUTT_GCC):
 $(MUTT_GCC_ASAN):
 	rm -rf $(INSTALL_BUILD_DIR) || true
 	make -C .. clean || true
-	cd .. ; CC=$(GCC)                       \
+	cd .. ; CC=$(GCC)                     \
   	CFLAGS="$(CFLAGS) -fsanitize=address" \
   	LDFLAGS="-fsanitize=address"          \
   	STRIP="$(STRIP)"                      \
@@ -122,10 +122,10 @@ vx-clang-clang_asan: $(MUTT_CLANG) $(MUTT_CLANG_ASAN)
 $(MUTT_CLANG):
 	rm -rf $(INSTALL_BUILD_DIR) || true
 	make -C .. clean || true
-	cd .. ; CC=$(CLANG)       \
-  	CFLAGS="$(CFLAGS)"      \
-  	STRIP="$(STRIP)"        \
-  	./configure             \
+	cd .. ; CC=$(CLANG) \
+  	CFLAGS="$(CFLAGS)"  \
+  	STRIP="$(STRIP)"    \
+  	./configure         \
   	--prefix=$(INSTALL_BUILD_DIR)
 	make -C ..
 	make -C .. install
@@ -136,7 +136,7 @@ $(MUTT_CLANG):
 $(MUTT_CLANG_ASAN):
 	rm -rf $(INSTALL_BUILD_DIR) || true
 	make -C .. clean || true
-	cd .. ; CC=$(CLANG)                     \
+	cd .. ; CC=$(CLANG)                   \
   	CFLAGS="$(CFLAGS) -fsanitize=address" \
   	LDFLAGS="-fsanitize=address"          \
   	STRIP="$(STRIP)"                      \
